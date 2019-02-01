@@ -2,21 +2,19 @@
 
 #define LOGNAME "graph.dot"
 
-#include "List.hpp"
+#include "Lisp.h"
 #include <iostream>
-
-#define LIST(type, name)  List type name (#name)
 
 int main ()
 {
-	LIST (<int>, list); 
+	icl::list <LispObj> obj;
+	std::map <std::string, int> map;
 
-	for (int i = 0; i < 5; i++)
-		list.push_back (rand () % 2000);
+	std::string str = "(1 2 3 4 (1 3 4 5))";
 
-	list.dump ();
+	parser (&obj, &str , map);
 
-	system ("pause");
+	listPrint (obj, map);
 
 	return 0;
 }
