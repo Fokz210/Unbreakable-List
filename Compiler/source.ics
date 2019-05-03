@@ -1,6 +1,4 @@
-push 12
-push 13
-add
-push 12
-mul
-pop
+push 123
+push [123]
+push [ax]
+push [ax + 123]

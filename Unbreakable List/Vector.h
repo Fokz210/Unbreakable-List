@@ -66,7 +66,7 @@ namespace icl
 	};
 
 	template <class T>
-	class vector
+	class vector              
 	{
 	public:
 		vector ();

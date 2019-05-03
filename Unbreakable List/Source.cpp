@@ -1,22 +1,17 @@
-#include "Processor.h"
 #include <fstream>
+#include "Processor.h"
 
 int main (int argv, char ** argc)
 {
-	const char * data = "";
+	const char * data = (argv == 1) ? "code.icp" : argc[1];
 
-	if (argv == 1)
-		data = "code.icp";
-	else
-		data = argc[1];
-
-	std::ifstream code (data);
 	Processor proc;
 
-	proc.read (code);
-	proc.run (std::cout);
-
+	std::ifstream code (data);
+	proc.read (code); 
 	code.close ();
+
+	proc.run (std::cout);
 
 	system ("pause");
 	return 0;

@@ -1,13 +1,13 @@
+#include "../config.h"
 #include "Processor.h"
-
-
 
 Processor::Processor () :
 	stack_ (),
-	code_ ()
+	code_ (),
+	registers_ (5),
+	memory_ (1024)
 {
 }
-
 
 Processor::~Processor () 
 {
@@ -17,50 +17,114 @@ void Processor::run (std::ostream & file)
 {
 	for (int i = 0; i < code_.size (); i++)
 	{
-		switch (code_[i].command)
+		switch (code_[i])
 		{
 		case Processor::push:
 		{
-			stack_.push (code_[i].input);
+			stack_.push (code_[++i]);
 		}
 		break;
+
+		case Processor::pop:
+		{
+			file << stack_.pop ();
+		}
+		break;
+
+		case Processor::push_reg:
+		{
+			registers_[code_[++i]] = stack_.pop ();
+		}
+		break;
+
 		case Processor::add:
 		{
 			int a = stack_.pop (), b = stack_.pop ();
 			stack_.push (a + b);
 		}
 		break;
+
 		case Processor::sub:
 		{
 			int a = stack_.pop (), b = stack_.pop ();
 			stack_.push (a - b);
 		}
 		break;
+
 		case Processor::div:
 		{
 			int a = stack_.pop (), b = stack_.pop ();
 			stack_.push (a / b);
 		}
 		break;
+
 		case Processor::mul:
 		{
 			int a = stack_.pop (), b = stack_.pop ();
 			stack_.push (a * b);
 		}
 		break;
-		case Processor::pop:
+
+		case Processor::pop_reg:
 		{
-			file << stack_.pop () << std::endl;
+			stack_.push (registers_[code_[++i]]);
 		}
 		break;
+
+		case Processor::in:
+		{
+			int input = 0;
+			std::cin >> input;
+			stack_.push (input);
+		}
+		break;
+
+		case Processor::out:
+		{
+			int output = stack_.pop ();
+			std::cout << output << "\n";
+		}
+		break;
+
+		case Processor::push_mem:
+		{
+			memory_[code_[++i]] = stack_.pop ();
+		}
+		break;
+
+		case Processor::push_mem_reg:
+		{
+			memory_[registers_[code_[++i]]] = stack_.pop ();
+		}
+		break;
+
+		case Processor::push_mem_reg_add:
+		{
+			memory_[registers_[code_[++i]] + code_[++i]] = stack_.pop ();
+		}
+		break;
+
 		default:
 			break;
 		}
+
 	}
 }
 
-void Processor::read (std::istream & file)
+bool Processor::read (std::istream & file)
 {
+	FileHeader header;
+
+	int sig, ver;
+
+	file >> sig >> ver;
+
+	if (sig != header.signature || ver != header.version)
+	{
+		std::cout << "Depricated syntax, please update file.\n";
+		return false;
+	}
+
 	int input;
 
 	while (file >> input)
@@ -68,11 +132,14 @@ void Processor::read (std::istream & file)
 
 		int data = 0;
 
-		if (input == push)
+		if (input == push || input == push_reg || input == pop_reg || input == push_mem || input == push_mem_reg)
 			file >> data;
 
-		code_.push_back ({ (comms) input, data });
+		code_.push_back (input);
+		code_.push_back (data);
 	}
+
+	return true;
 }
 
 //void Processor::parse ()

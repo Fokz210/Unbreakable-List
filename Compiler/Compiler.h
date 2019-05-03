@@ -7,12 +7,21 @@ class Compiler
 {
 public:
 
+	enum regs
+	{
+		undef,
+		ax, bx, cx, dx
+	};
+
 	enum comms
 	{
-		push,
+		push, pop,
 		add, sub, div, mul,
-		pop
+		in, out,
+		push_reg, pop_reg,
+		push_mem, push_mem_reg, push_mem_reg_add
 	};
+
 
 	Compiler ();
 	~Compiler ();

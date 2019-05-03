@@ -1,5 +1,5 @@
-#include "Compiler.h"
 #include <fstream>
+#include "Compiler.h"
 
 int main (int argv, char ** argc)
 {
