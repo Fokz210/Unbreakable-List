@@ -1,4 +1,8 @@
-push 123
-push [123]
-push [ax]
-push [ax + 123]
+push 3
+push [13]
+pop [13]
+pop [13]
+pop [13]
+pop
+pop
+pop

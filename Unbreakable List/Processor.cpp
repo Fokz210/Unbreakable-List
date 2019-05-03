@@ -1,5 +1,7 @@
 #include "../config.h"
+#include <Windows.h>
 #include "Processor.h"
+
 
 Processor::Processor () :
 	stack_ (),
@@ -89,18 +91,42 @@ void Processor::run (std::ostream & file)
 		case Processor::push_mem:
 		{
 			memory_[code_[++i]] = stack_.pop ();
+			Sleep (ICP_MEMORY_DELAY);
 		}
 		break;
 
 		case Processor::push_mem_reg:
 		{
 			memory_[registers_[code_[++i]]] = stack_.pop ();
+			Sleep (ICP_MEMORY_DELAY);
 		}
 		break;
 
 		case Processor::push_mem_reg_add:
 		{
 			memory_[registers_[code_[++i]] + code_[++i]] = stack_.pop ();
+			Sleep (ICP_MEMORY_DELAY);
+		}
+		break;
+
+		case Processor::pop_mem:
+		{
+			stack_.push (memory_[code_[++i]]);
+			Sleep (ICP_MEMORY_DELAY);
+		}
+		break;
+
+		case Processor::pop_mem_reg:
+		{
+			stack_.push (memory_[registers_[code_[++i]]]);
+			Sleep (ICP_MEMORY_DELAY);
+		}
+		break;
+		
+		case Processor::pop_mem_reg_add:
+		{
+			stack_.push (memory_[registers_[code_[++i]] + code_[++i]]);
+			Sleep (ICP_MEMORY_DELAY);
 		}
 		break;
 
@@ -128,16 +154,7 @@ bool Processor::read (std::istream & file)
 	int input;
 
 	while (file >> input)
-	{
-
-		int data = 0;
-
-		if (input == push || input == push_reg || input == pop_reg || input == push_mem || input == push_mem_reg)
-			file >> data;
-
 		code_.push_back (input);
-		code_.push_back (data);
-	}
 
 	return true;
 }

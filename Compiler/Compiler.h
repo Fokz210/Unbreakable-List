@@ -19,7 +19,8 @@ public:
 		add, sub, div, mul,
 		in, out,
 		push_reg, pop_reg,
-		push_mem, push_mem_reg, push_mem_reg_add
+		push_mem, push_mem_reg, push_mem_reg_add,
+		pop_mem, pop_mem_reg, pop_mem_reg_add
 	};
 
 
