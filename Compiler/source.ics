@@ -1,8 +1,6 @@
-push 3
-push [13]
-pop [13]
-pop [13]
-pop [13]
-pop
-pop
-pop
+in
+in
+push [3]
+push [4]
+push 0
+out

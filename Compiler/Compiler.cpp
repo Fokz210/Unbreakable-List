@@ -251,7 +251,7 @@ bool Compiler::write (std::ostream & file)
 
 	file << header.signature << " " << header.version << " ";
 
-	for (int i = 0; i < code_.size (); i++)
+	for (unsigned i = 0; i < code_.size (); i++)
 		file << code_[i] << " ";
 
 	return true;

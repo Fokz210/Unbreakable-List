@@ -136,7 +136,7 @@ namespace icl
 		// vector v3 = G (v2);
 
 
-		vector <T> & operator = (const vector <T> victim)
+		vector <T> & operator = (vector <T> victim)
 		{
 			swap (victim);
 
@@ -231,7 +231,7 @@ namespace icl
 		
 		if (size > size_)
 			for (int i = size_; i < size; i++)
-				container_[i] = 0;
+				container_[i] = T();
 
 		size_ = size;
 
@@ -242,7 +242,7 @@ namespace icl
 	unsigned vector<T>::push_back (T element)
 	{
 		if (size_ >= alloc_size_)
-		realloc (size_ * 1.5 + 1);
+		realloc (unsigned (size_ * 1.5 + 1));
 
 		container_[size_] = element;
 		size_++;
@@ -372,7 +372,7 @@ namespace icl
 	inline arrayShell<T>::arrayShell (int size) :
 		data_ (new char [sizeof (int) * 4 + sizeof (T) * size])
 	{
-		for (int i = 0; i < sizeof (int) * 4 + sizeof (T) * size; i++)
+		for (unsigned i = 0; i < sizeof (int) * 4 + sizeof (T) * size; i++)
 			data_[i] = 0;
 
 		*(int *)(data_ + sizeof (int)) = size;
@@ -444,7 +444,7 @@ namespace icl
 	inline unsigned arrayShell<T>::resize (int size)
 	{
 		char * newData = new char[sizeof (int) * 4 + sizeof (T) * size];
-		for (int i = 0; i < sizeof (int) * 4 + sizeof (T) * size; i++)
+		for (unsigned i = 0; i < sizeof (int) * 4 + sizeof (T) * size; i++)
 			newData[i] = 0;
 
 		T * newArray = (T *)(newData + sizeof (int) * 3);
