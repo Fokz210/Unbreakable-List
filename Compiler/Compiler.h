@@ -7,23 +7,22 @@ class Compiler
 {
 public:
 
-	#define DEFREG(reg, num)  REG_##reg = num,
-
 	enum regs
 	{
-		#include "../Unbreakable List/Commands.h"
+		undef,
+		ax, bx, cx, dx
 	};
-
-	#undef DEFREG
-
-	#define DEFCMD(command, num, data)  CMD_##command = num, 
 
 	enum comms
 	{
-		#include "../Unbreakable List/Commands.h"
+		push, pop,
+		add, sub, div, mul,
+		in, out,
+		push_reg, pop_reg,
+		push_mem, push_mem_reg, push_mem_reg_add,
+		pop_mem, pop_mem_reg, pop_mem_reg_add
 	};
 
-	#undef DEFCMD
 
 	Compiler ();
 	~Compiler ();

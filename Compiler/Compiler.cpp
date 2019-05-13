@@ -20,43 +20,52 @@ bool Compiler::compile (std::istream & file)
 
 	while (file >> input)
 	{
-		
-		#define DEFCMD(comm, num)  else if (input == #comm) \
-										command = CMD_##comm; 
-		if (0);
-		#include "../Unbreakable List/Commands.h"
-	    else
+		if (input == "push")
+			command = push;
+		else if (input == "add")
+			command = add;
+		else if (input == "sub")
+			command = sub;
+		else if (input == "div")
+			command = div;
+		else if (input == "mul")
+			command = mul;
+		else if (input == "pop")
+			command = pop;
+		else if (input == "in")
+			command = in;
+		else if (input == "out")
+			command = out;
+		else
 		{
 			std::cout << "Compilation error. \"" << input << "\" was not recognised." << std::endl;
 			system ("pause");
 			return false;
 		}
 
-		#undef DEFCMD
-
-		if (command == CMD_PUSH)
+		if (command == push)
 		{
 			file >> input;
 
-			if (input == "AX")
+			if (input == "ax")
 			{
-				code_.push_back (CMD_PUSH_MEM);
-				code_.push_back (REG_AX);
+				code_.push_back (push_reg);
+				code_.push_back (ax);
 			}
-			else if (input == "BX")
+			else if (input == "bx")
 			{
-				code_.push_back (CMD_PUSH_MEM);
-				code_.push_back (REG_BX);
+				code_.push_back (push_reg);
+				code_.push_back (bx);
 			}
-			else if (input == "CX")
+			else if (input == "cx")
 			{
-				code_.push_back (CMD_PUSH_MEM);
-				code_.push_back (REG_CX);
+				code_.push_back (push_reg);
+				code_.push_back (cx);
 			}
-			else if (input == "DX")
+			else if (input == "dx")
 			{
-				code_.push_back (CMD_PUSH_MEM);
-				code_.push_back (REG_DX);
+				code_.push_back (push_reg);
+				code_.push_back (dx);
 			}
 			else if (input[0] == '[')
 			{
@@ -64,29 +73,29 @@ bool Compiler::compile (std::istream & file)
 				{
 					std::string iterator = input.substr (1, input.size () - 2);
 					
-					if (iterator == "AX")
+					if (iterator == "ax")
 					{
-						code_.push_back (CMD_PUSH_MEM_REG);
-						code_.push_back (REG_AX);
+						code_.push_back (push_mem_reg);
+						code_.push_back (ax);
 					}
-					else if (iterator == "BX")
+					else if (iterator == "bx")
 					{
-						code_.push_back (CMD_PUSH_MEM_REG);
-						code_.push_back (REG_BX);
+						code_.push_back (push_mem_reg);
+						code_.push_back (bx);
 					}
-					else if (iterator == "CX")
+					else if (iterator == "cx")
 					{
-						code_.push_back (CMD_PUSH_MEM_REG);
-						code_.push_back (REG_CX);
+						code_.push_back (push_mem_reg);
+						code_.push_back (cx);
 					}
-					else if (iterator == "DX")
+					else if (iterator == "dx")
 					{
-						code_.push_back (CMD_PUSH_MEM_REG);
-						code_.push_back (REG_DX);
+						code_.push_back (push_mem_reg);
+						code_.push_back (dx);
 					}
 					else
 					{
-						code_.push_back (CMD_PUSH_MEM);
+						code_.push_back (push_mem);
 						code_.push_back (std::stoi (iterator));
 					}
 				}
@@ -94,25 +103,25 @@ bool Compiler::compile (std::istream & file)
 				{
 					std::string iterator = input.substr (1);
 
-					if (iterator == "AX")
+					if (iterator == "ax")
 					{
-						code_.push_back (CMD_PUSH_MEM_REG_ADD);
-						code_.push_back (REG_AX);
+						code_.push_back (push_mem_reg_add);
+						code_.push_back (ax);
 					}
-					else if (iterator == "BX")
+					else if (iterator == "bx")
 					{
-						code_.push_back (CMD_PUSH_MEM_REG_ADD);
-						code_.push_back (REG_BX);
+						code_.push_back (push_mem_reg_add);
+						code_.push_back (bx);
 					}
-					else if (iterator == "CX")
+					else if (iterator == "cx")
 					{
-						code_.push_back (CMD_PUSH_MEM_REG_ADD);
-						code_.push_back (REG_CX);
+						code_.push_back (push_mem_reg_add);
+						code_.push_back (cx);
 					}
-					else if (iterator == "DX")
+					else if (iterator == "dx")
 					{
-						code_.push_back (CMD_PUSH_MEM_REG_ADD);
-						code_.push_back (REG_DX);
+						code_.push_back (push_mem_reg_add);
+						code_.push_back (dx);
 					}
 
 					file >> input >> input;
@@ -124,36 +133,36 @@ bool Compiler::compile (std::istream & file)
 			}
 			else
 			{
-				code_.push_back (CMD_PUSH);
+				code_.push_back (push);
 				code_.push_back (std::stoi (input));
 			}
 
 		}
-		else if (command == CMD_POP)
+		else if (command == pop)
 		{
 			std::streampos currPos = file.tellg ();
 
 			file >> input;
 
-			if (input == "AX")
+			if (input == "ax")
 			{
-				code_.push_back (CMD_POP_REG);
-				code_.push_back (REG_AX);
+				code_.push_back (pop_reg);
+				code_.push_back (ax);
 			}
-			else if (input == "BX")
+			else if (input == "bx")
 			{
-				code_.push_back (CMD_POP_REG);
-				code_.push_back (REG_BX);
+				code_.push_back (pop_reg);
+				code_.push_back (bx);
 			}
-			else if (input == "CX")
+			else if (input == "cx")
 			{
-				code_.push_back (CMD_POP_REG);
-				code_.push_back (REG_CX);
+				code_.push_back (pop_reg);
+				code_.push_back (cx);
 			}
-			else if (input == "DX")
+			else if (input == "dx")
 			{
-				code_.push_back (CMD_POP_REG);
-				code_.push_back (REG_DX);
+				code_.push_back (pop_reg);
+				code_.push_back (dx);
 			}
 			else if (input[0] == '[')
 			{
@@ -161,29 +170,29 @@ bool Compiler::compile (std::istream & file)
 				{
 					std::string iterator = input.substr (1, input.size () - 2);
 
-					if (iterator == "AX")
+					if (iterator == "ax")
 					{
-						code_.push_back (CMD_POP_MEM_REG);
-						code_.push_back (REG_AX);
+						code_.push_back (pop_mem_reg);
+						code_.push_back (ax);
 					}
-					else if (iterator == "BX")
+					else if (iterator == "bx")
 					{
-						code_.push_back (CMD_POP_MEM_REG);
-						code_.push_back (REG_BX);
+						code_.push_back (pop_mem_reg);
+						code_.push_back (bx);
 					}
-					else if (iterator == "CX")
+					else if (iterator == "cx")
 					{
-						code_.push_back (CMD_POP_MEM_REG);
-						code_.push_back (REG_CX);
+						code_.push_back (pop_mem_reg);
+						code_.push_back (cx);
 					}
-					else if (iterator == "DX")
+					else if (iterator == "dx")
 					{
-						code_.push_back (CMD_POP_MEM_REG);
-						code_.push_back (REG_DX);
+						code_.push_back (pop_mem_reg);
+						code_.push_back (dx);
 					}
 					else
 					{
-						code_.push_back (CMD_POP_REG);
+						code_.push_back (pop_mem);
 						code_.push_back (std::stoi (iterator));
 					}
 				}
@@ -191,25 +200,25 @@ bool Compiler::compile (std::istream & file)
 				{
 					std::string iterator = input.substr (1);
 
-					if (iterator == "AX")
+					if (iterator == "ax")
 					{
-						code_.push_back (CMD_POP_MEM_REG_ADD);
-						code_.push_back (REG_AX);
+						code_.push_back (pop_mem_reg_add);
+						code_.push_back (ax);
 					}
-					else if (iterator == "BX")
+					else if (iterator == "bx")
 					{
-						code_.push_back (CMD_POP_MEM_REG_ADD);
-						code_.push_back (REG_BX);
+						code_.push_back (pop_mem_reg_add);
+						code_.push_back (bx);
 					}
-					else if (iterator == "CX")
+					else if (iterator == "cx")
 					{
-						code_.push_back (CMD_POP_MEM_REG_ADD);
-						code_.push_back (REG_CX);
+						code_.push_back (pop_mem_reg_add);
+						code_.push_back (cx);
 					}
-					else if (iterator == "DX")
+					else if (iterator == "dx")
 					{
-						code_.push_back (CMD_POP_MEM_REG_ADD);
-						code_.push_back (REG_DX);
+						code_.push_back (pop_mem_reg_add);
+						code_.push_back (dx);
 					}
 
 					file >> input >> input;
@@ -222,7 +231,7 @@ bool Compiler::compile (std::istream & file)
 			else
 			{
 				file.seekg (currPos);
-				code_.push_back (CMD_POP);
+				code_.push_back (pop);
 			}
 		}
 		else 

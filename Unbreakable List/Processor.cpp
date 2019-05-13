@@ -1,5 +1,4 @@
 #include "../config.h"
-#include <cmath>
 #include <Windows.h>
 #include "Processor.h"
 
@@ -23,14 +22,108 @@ void Processor::run (std::ostream & file)
 	{
 		switch (int(code_[i]))
 		{
+		case Processor::push:
+		{
+			stack_.push (code_[++i]);
+		}
+		break;
 
-		#define DEFCMD(comm, num, body)  case CMD_##comm:\
-										 body \
-										 break;													
+		case Processor::pop:
+		{
+			file << stack_.pop ();
+		}
+		break;
 
-		#include "Commands.h"
+		case Processor::push_reg:
+		{
+			registers_[code_[++i]] = stack_.pop ();
+		}
+		break;
 
-		#undef DEFCMD
+		case Processor::add:
+		{
+			float a = stack_.pop (), b = stack_.pop ();
+			stack_.push (b + a);
+		}
+		break;
+
+		case Processor::sub:
+		{
+			float a = stack_.pop (), b = stack_.pop ();
+			stack_.push (b - a);
+		}
+		break;
+
+		case Processor::div:
+		{
+			float a = stack_.pop (), b = stack_.pop ();
+			stack_.push (b / a);
+		}
+		break;
+
+		case Processor::mul:
+		{
+			float a = stack_.pop (), b = stack_.pop ();
+			stack_.push (b * a);
+		}
+		break;
+
+		case Processor::pop_reg:
+		{
+			stack_.push (registers_[code_[++i]]);
+		}
+		break;
+
+		case Processor::in:
+		{
+			float input = 0;
+			std::cin >> input;
+			stack_.push (input);
+		}
+		break;
+
+		case Processor::out:
+		{
+			float output = stack_.pop ();
+			std::cout << output << "\n";
+		}
+		break;
+
+		case Processor::push_mem:
+		{
+			cache_.checkWrite (code_[++i], stack_.pop (), &memory_);
+		}
+		break;
+
+		case Processor::push_mem_reg:
+		{
+			cache_.checkWrite (registers_[code_[++i]], stack_.pop (), &memory_);
+		}
+		break;
+
+		case Processor::push_mem_reg_add:
+		{
+			cache_.checkWrite (registers_[code_[++i]] + code_[++i], stack_.pop (), &memory_);
+		}
+		break;
+
+		case Processor::pop_mem:
+		{
+			stack_.push (cache_.checkRead (code_[++i], &memory_));
+		}
+		break;
+
+		case Processor::pop_mem_reg:
+		{
+			stack_.push (cache_.checkRead (registers_[code_[++i]], &memory_));
+		}
+		break;
+		
+		case Processor::pop_mem_reg_add:
+		{
+			stack_.push (cache_.checkRead (registers_[code_[++i]] + code_[++i], &memory_));
+		}
+		break;
 
 		default:
 			break;

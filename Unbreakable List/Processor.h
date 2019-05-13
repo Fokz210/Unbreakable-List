@@ -42,14 +42,15 @@ class Processor
 {
 public:
 	
-	#define DEFCMD(command, num, body)  command = num, 
-
 	enum comms
 	{
-		#include "../Unbreakable List/Commands.h"
+		push, pop,
+		add, sub, div, mul,
+		in, out,
+		push_reg, pop_reg,
+		push_mem, push_mem_reg, push_mem_reg_add,
+		pop_mem, pop_mem_reg, pop_mem_reg_add
 	};
-	
-	#undef DEFCMD
 
 	Processor ();
 	~Processor ();
