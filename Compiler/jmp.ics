@@ -1,0 +1,12 @@
+START:
+IN
+PUSH -1
+JE STOP
+SQRT
+PUSH [X]
+OUT 
+JMP 0
+STOP:
+X: DV 0
+Y: DV 1
+Z: DV [50] 2 5 8

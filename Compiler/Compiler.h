@@ -2,10 +2,18 @@
 #include "../Unbreakable List/Stack.h"
 #include <iostream>
 #include <string>
+#include <map>
+#include <vector>
 
 class Compiler
 {
 public:
+
+	struct inscase
+	{
+		int first;
+		std::string second;
+	};
 
 	#define DEFREG(reg, num)  REG_##reg = num,
 
@@ -28,10 +36,12 @@ public:
 	Compiler ();
 	~Compiler ();
 
-	bool compile (std::istream & file);
+	bool compile (std::istream & file, bool seciter = false);
 	bool write (std::ostream & file);
 
 private:
 	icl::vector <int> code_;
+	std::map <std::string, int> gt_;
+	std::vector <inscase> insertion_;
 };
 

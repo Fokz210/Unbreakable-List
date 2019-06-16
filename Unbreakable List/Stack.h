@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Vector.h"
+#include <vector>
 
 namespace icl
 {
@@ -85,4 +86,65 @@ namespace icl
 		container_.dump (std::cout);
 	}
 
+	template <class T>
+	class array_based_stack
+	{
+	public:
+		array_based_stack (std::vector <T> * arr, unsigned size, unsigned start);
+		unsigned size ();
+		void push (T el);
+		T pop ();
+		void clear ();
+		void setarr (std::vector <T>* arr);
+
+	protected:
+		unsigned max_size_;
+		unsigned sp_;
+		unsigned start_;
+		std::vector <T>* arr_;
+	};
+
+
+	template<class T>
+	inline array_based_stack<T>::array_based_stack (std::vector <T>* arr, unsigned size, unsigned start) :
+		arr_ (arr),
+		max_size_ (start + size),
+		sp_ (start),
+		start_ (start)
+	{
+
+	}
+
+	template<class T>
+	inline unsigned array_based_stack<T>::size ()
+	{
+		return sp_ - start_;
+	}
+
+	template<class T>
+	inline void array_based_stack<T>::push (T el)
+	{
+		if (sp_ < max_size_)
+			(*arr_)[sp_++] = el;
+		else
+			throw "stack overflow";
+	}
+
+	template<class T>
+	inline T array_based_stack<T>::pop ()
+	{
+		if (sp_ > start_)
+			return (*arr_)[--sp_];
+		else
+			throw "stack is empty";
+	}
+
+	template<class T>
+	inline void array_based_stack<T>::clear ()
+	{
+		for (int i = start_; i < max_size_; i++)
+			(*arr_)[i] = T ();
+	}
+
+	
 }

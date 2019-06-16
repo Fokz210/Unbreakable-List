@@ -124,7 +124,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Unbreakable List\code.icp" />
+    <None Include="jmp.ics" />
     <None Include="source.ics" />
+    <None Include="test.ics" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

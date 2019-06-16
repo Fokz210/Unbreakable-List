@@ -33,7 +33,7 @@ namespace icl
 	{
 	public:
 		contShell ();
-		T & operator () ();
+		T& operator () ();
 		unsigned sumUpdate ();
 		bool     sumCheck ();
 		bool     ok ();
@@ -51,29 +51,29 @@ namespace icl
 	public:
 		arrayShell (int size);
 		~arrayShell ();
-		T & operator [] (int i);
-		const T & operator [] (int i) const;
+		T& operator [] (int i);
+		const T& operator [] (int i) const;
 		bool ok ();
 		unsigned sumCalc ();
 		bool sumCheck ();
 		unsigned resize (int size);
 		unsigned size ();
 		unsigned clear ();
-		void swap (arrayShell <T> & other);
-		
+		void swap (arrayShell <T>& other);
+
 	private:
-		char * data_;
+		char* data_;
 	};
 
 	template <class T>
-	class vector              
+	class vector
 	{
 	public:
 		vector ();
 		vector (unsigned size);
-		vector (const vector <T> & other);
-		vector (vector <T> && other);
-		vector (contShell <vector <T>> * shell);
+		vector (const vector <T>& other);
+		vector (vector <T>&& other);
+		vector (contShell <vector <T>>* shell);
 		~vector ();
 		unsigned realloc (unsigned size);
 		unsigned resize (unsigned size);
@@ -81,19 +81,20 @@ namespace icl
 		T pop_back ();
 		unsigned size () const;
 		void clear ();
-		std::ostream & dump (std::ostream & stream);
+		std::ostream& dump (std::ostream& stream);
 		bool ok ();
-		void swap (vector <T> & other);
-		
-		T & operator [] (unsigned iterator)
+		void swap (vector <T>& other);
+
+		T& operator [] (unsigned iterator)
 		{
 			if (iterator >= size_)
 				assert (!"vector: out of range");
 
+
 			return container_[iterator];
 		}
-		
-		const T & operator [] (unsigned iterator) const
+
+		const T& operator [] (unsigned iterator) const
 		{
 			if (iterator >= size_)
 				assert (!"vector: out of range");
@@ -119,7 +120,7 @@ namespace icl
 		}*/
 
 		// vector v = vector (15);
-		
+
 		// vector F ()
 		// {
 		//    vector v (15)
@@ -136,7 +137,7 @@ namespace icl
 		// vector v3 = G (v2);
 
 
-		vector <T> & operator = (vector <T> victim)
+		vector <T>& operator = (vector <T> victim)
 		{
 			swap (victim);
 
@@ -144,14 +145,14 @@ namespace icl
 		}
 
 		template <typename T>
-		friend std::ostream & operator << (std::ostream & s, vector <T> & v);
+		friend std::ostream& operator << (std::ostream& s, vector <T>& v);
 
 
 	private:
 		arrayShell <T> container_;
 		unsigned alloc_size_;
 		unsigned size_;
-		contShell<vector<T>> * shell_;
+		contShell<vector<T>>* shell_;
 		unsigned contHash_;
 	};
 
@@ -177,7 +178,7 @@ namespace icl
 	}
 
 	template <typename T>
-	vector<T>::vector (const vector <T> & other) :
+	vector<T>::vector (const vector <T>& other) :
 		container_ (0),
 		alloc_size_ (0),
 		size_ (0),
@@ -190,7 +191,7 @@ namespace icl
 	}
 
 	template <typename T>
-	vector<T>::vector (vector <T> && other) :
+	vector<T>::vector (vector <T>&& other) :
 		container_ (0),
 		alloc_size_ (0),
 		size_ (0),
@@ -220,7 +221,7 @@ namespace icl
 	inline unsigned vector<T>::realloc (unsigned size)
 	{
 		alloc_size_ = size;
-		return container_.resize(size);
+		return container_.resize (size);
 	}
 
 
@@ -228,10 +229,10 @@ namespace icl
 	inline unsigned vector<T>::resize (unsigned size)
 	{
 		realloc (size * 1.5);
-		
+
 		if (size > size_)
 			for (int i = size_; i < size; i++)
-				container_[i] = T();
+				container_[i] = T ();
 
 		size_ = size;
 
@@ -242,7 +243,7 @@ namespace icl
 	unsigned vector<T>::push_back (T element)
 	{
 		if (size_ >= alloc_size_)
-		realloc (unsigned (size_ * 1.5 + 1));
+			realloc (unsigned (size_ * 1.5 + 1));
 
 		container_[size_] = element;
 		size_++;
@@ -280,7 +281,7 @@ namespace icl
 	}
 
 	template<class T>
-	inline std::ostream & vector<T>::dump (std::ostream & stream)
+	inline std::ostream& vector<T>::dump (std::ostream& stream)
 	{
 		stream << "vector (" << ") [" << this << "]\n";
 		stream << "{\n";
@@ -303,17 +304,17 @@ namespace icl
 	template<class T>
 	inline bool vector<T>::ok ()
 	{
-		if (!container_.ok())
+		if (!container_.ok ())
 			return false;
 
-		if (shell_) 
+		if (shell_)
 			return shell_->ok ();
 
 		return true;
 	}
 
 	template<typename T>
-	std::ostream & operator<<(std::ostream & s, vector <T> & v)
+	std::ostream& operator<<(std::ostream& s, vector <T>& v)
 	{
 		for (int i = 0; i < v.size (); i++)
 			s << "[" << v[i] << "] ";
@@ -331,7 +332,7 @@ namespace icl
 	}
 
 	template<class T>
-	T & contShell<T>::operator()()
+	T& contShell<T>::operator()()
 	{
 		return object_;
 	}
@@ -343,9 +344,9 @@ namespace icl
 
 		unsigned tempChecksum = 0;
 
-		unsigned * data = (unsigned *) this;
+		unsigned* data = (unsigned*)this;
 		for (unsigned i = 0; i < sizeof (*this) / 4; i++)
-			tempChecksum  += data[i] ^ i;
+			tempChecksum += data[i] ^ i;
 
 		return checksum_ = tempChecksum;
 	}
@@ -355,7 +356,7 @@ namespace icl
 	{
 		unsigned prevSum = checksum_;
 		sumUpdate ();
-	
+
 		return prevSum == checksum_;
 	}
 
@@ -370,12 +371,12 @@ namespace icl
 
 	template<typename T>
 	inline arrayShell<T>::arrayShell (int size) :
-		data_ (new char [sizeof (int) * 4 + sizeof (T) * size])
+		data_ (new char[sizeof (int) * 4 + sizeof (T) * size])
 	{
 		for (unsigned i = 0; i < sizeof (int) * 4 + sizeof (T) * size; i++)
 			data_[i] = 0;
 
-		*(int *)(data_ + sizeof (int)) = size;
+		*(int*)(data_ + sizeof (int)) = size;
 	}
 
 	template<typename T>
@@ -385,15 +386,15 @@ namespace icl
 	}
 
 	template<typename T>
-	inline T & arrayShell<T>::operator[](int i)
+	inline T& arrayShell<T>::operator[](int i)
 	{
-		return *(T *)(data_ + sizeof (int) * 3 + sizeof (T) * i);
+		return *(T*)(data_ + sizeof (int) * 3 + sizeof (T) * i);
 	}
 
 	template<typename T>
-	inline const T & arrayShell<T>::operator[](int i) const
+	inline const T& arrayShell<T>::operator[](int i) const
 	{
-		return *(T *)(data_ + sizeof (int) * 3 + sizeof (T) * i);
+		return *(T*)(data_ + sizeof (int) * 3 + sizeof (T) * i);
 	}
 
 	template<typename T>
@@ -402,8 +403,8 @@ namespace icl
 		if (!data_)
 			return false;
 
-		int size = *(int *)(data_ + sizeof (int));
-		if (*(int *)data_ != *(int *)(data_ + sizeof (int) * 3 + sizeof (T) * size))
+		int size = *(int*)(data_ + sizeof (int));
+		if (*(int*)data_ != *(int*)(data_ + sizeof (int) * 3 + sizeof (T) * size))
 			return false;
 
 		if (!sumCheck ())
@@ -415,14 +416,14 @@ namespace icl
 	template<typename T>
 	inline unsigned arrayShell<T>::sumCalc ()
 	{
-		int size = *(int *)(data_ + sizeof (int));
-		int sizeOfArray = sizeof (int) * 4 + sizeof (T) * size; 
+		int size = *(int*)(data_ + sizeof (int));
+		int sizeOfArray = sizeof (int) * 4 + sizeof (T) * size;
 		unsigned summ = 0;
 
-		int * hash = (int *)(data_ + sizeof (int) * 2);
+		int* hash = (int*)(data_ + sizeof (int) * 2);
 		*hash = 0;
 
-		int * array = (int *) (data_ + sizeof (int) * 3);
+		int* array = (int*)(data_ + sizeof (int) * 3);
 
 		for (int i = 0; i < sizeOfArray / sizeof (int); i++)
 			summ += array[i] ^ i;
@@ -435,7 +436,7 @@ namespace icl
 	template<typename T>
 	inline bool arrayShell<T>::sumCheck ()
 	{
-		int hash = *(int *)(data_ + sizeof (int) * 2);
+		int hash = *(int*)(data_ + sizeof (int) * 2);
 
 		return hash == sumCalc ();
 	}
@@ -443,19 +444,19 @@ namespace icl
 	template<typename T>
 	inline unsigned arrayShell<T>::resize (int size)
 	{
-		char * newData = new char[sizeof (int) * 4 + sizeof (T) * size];
+		char* newData = new char[sizeof (int) * 4 + sizeof (T) * size];
 		for (unsigned i = 0; i < sizeof (int) * 4 + sizeof (T) * size; i++)
 			newData[i] = 0;
 
-		T * newArray = (T *)(newData + sizeof (int) * 3);
-		T * Array = (T *)(data_ + sizeof (int) * 3);
+		T* newArray = (T*)(newData + sizeof (int) * 3);
+		T* Array = (T*)(data_ + sizeof (int) * 3);
 
-		int * size_ = (int *)(data_ + sizeof (int));
+		int* size_ = (int*)(data_ + sizeof (int));
 
 		for (int i = 0; i < size && i < *size_; i++)
 			newArray[i] = Array[i];
 
-		*(int *)(newData + sizeof (int)) = size;
+		*(int*)(newData + sizeof (int)) = size;
 
 		delete(data_);
 
@@ -466,13 +467,13 @@ namespace icl
 	template <typename T>
 	inline unsigned arrayShell<T>::size ()
 	{
-		return *(int *)(data_ + sizeof(int));
+		return *(int*)(data_ + sizeof (int));
 	}
 
 	template <typename T>
 	inline unsigned arrayShell<T>::clear ()
 	{
-		return resize(0);
+		return resize (0);
 	}
 
 	template<typename T>
@@ -481,12 +482,13 @@ namespace icl
 		std::swap (data_, other.data_);
 	}
 
-	template <typename T> 
-	inline void vector<T>::swap (vector <T> & other)
+	template <typename T>
+	inline void vector<T>::swap (vector <T>& other)
 	{
 		container_.swap (other.container_);
 		std::swap (alloc_size_, other.alloc_size_);
 		std::swap (size_, other.size_);
 		std::swap (shell_, other.shell_);
 	}
+
 }

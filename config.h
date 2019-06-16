@@ -1,7 +1,7 @@
 #pragma once
 
-#define ICP_MEMORY_DELAY 10000
-#define ICP_CACHE_DELAY  500
+#define ICP_MEMORY_DELAY 1//0000
+#define ICP_CACHE_DELAY  5//00
 
 struct FileHeader
 {

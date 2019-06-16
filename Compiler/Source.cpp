@@ -13,5 +13,6 @@ int main (int argv, char ** argc)
 	comp.write (code);
 	code.close();
 
+
 	return 0;
 }

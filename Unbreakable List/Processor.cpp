@@ -3,13 +3,13 @@
 #include <Windows.h>
 #include "Processor.h"
 
-
-Processor::Processor () :
-	stack_ (),
-	code_ (),
-	registers_ (5),
-	memory_ (1024),
-	cache_ ()
+Processor::Processor (DeviceManager PCI) :
+	cache_ (),
+	callStack_ (),
+	data_ (CODE_SIZE + REG_SIZE + MEM_SIZE + STACK_SIZE),
+	stack_ (&data_, STACK_SIZE, STACK_START),
+	PCI_ (PCI),
+	codeSize_ (0)
 {
 }
 
@@ -19,14 +19,15 @@ Processor::~Processor ()
 
 void Processor::run (std::ostream & file)
 {
-	for (unsigned i = 0; i < code_.size (); i++)
+
+	for (unsigned i = CODE_START; i < codeSize_; i++)
 	{
-		switch (int(code_[i]))
+		switch (int(data_[i]))
 		{
 
-		#define DEFCMD(comm, num, body)  case CMD_##comm:\
+		#define DEFCMD(comm, num, body)  case comms::CMD_##comm:\
 										 body \
-										 break;													
+										 break;												
 
 		#include "Commands.h"
 
@@ -36,6 +37,7 @@ void Processor::run (std::ostream & file)
 			break;
 		}
 
+		PCI_.Run ();
 	}
 }
 
@@ -55,8 +57,12 @@ bool Processor::read (std::istream & file)
 
 	int input;
 
+	int i = CODE_START;
+
 	while (file >> input)
-		code_.push_back (input);
+		data_[i++] = input;
+
+	codeSize_ = i;
 
 	return true;
 }
@@ -157,7 +163,7 @@ int Cache::findCellIndex (int address)
 	return -1;
 }
 
-float Cache::checkRead (int address, icl::vector<float>* memory)
+float Cache::checkRead (int address, std::vector <float> * data_)
 {
 	int cacheCellIndex = -1;
 	cacheCellIndex = findCellIndex (address);
@@ -175,15 +181,15 @@ float Cache::checkRead (int address, icl::vector<float>* memory)
 	{
 		Sleep (ICP_MEMORY_DELAY);
 
-		float data = (*memory)[address];
+		float data = (*data_)[address];
 		
-		blockCopy (cache_[findUselessIndex()], address, memory);
+		blockCopy (cache_[findUselessIndex()], address, data_ );
 
 		return data;
 	}
 }
 
-void Cache::checkWrite (int address, float data, icl::vector<float>* memory)
+void Cache::checkWrite (int address, float data, std::vector <float> *data_)
 {
 	int cacheCellIndex = -1;
 	cacheCellIndex = findCellIndex (address);
@@ -194,18 +200,18 @@ void Cache::checkWrite (int address, float data, icl::vector<float>* memory)
 		cache_[cacheCellIndex].priority++;
 		cache_[cacheCellIndex].block[address % 10] = data;
 
-		(*memory)[address] = data;
+		(*data_)[address] = data;
 	}
 	else
 	{
 		Sleep (ICP_MEMORY_DELAY);
 
-		(*memory)[address] = data;
-		blockCopy (cache_[findUselessIndex()], address, memory);
+		(*data_)[address] = data;
+		blockCopy (cache_[findUselessIndex()], address, data_);
 	}
 }
 
-void Cache::blockCopy (MEMCELL& cell, int address, icl::vector<float>* memory)
+void Cache::blockCopy (MEMCELL& cell, int address, std::vector <float> * data)
 {
 	int blockAddress = (address / 10) * 10;
 
@@ -213,7 +219,7 @@ void Cache::blockCopy (MEMCELL& cell, int address, icl::vector<float>* memory)
 	cell.block.resize (10);
 
 	for (int i = blockAddress; i < blockAddress + 10; i++)
-		cell.block[i % 10] = (*memory)[i];
+		cell.block[i % 10] = (*data)[i];
 
 	cell.block_address = blockAddress;
 	cell.priority = 0;

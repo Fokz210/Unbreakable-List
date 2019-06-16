@@ -37,5 +37,11 @@
     <None Include="..\Unbreakable List\code.icp">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="jmp.ics">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="test.ics">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
