@@ -1,20 +1,25 @@
-//Unbreakable List - V 1.0
+#include <fstream>
+#include "Processor.h"
+#include "AudioCard.h"
 
-#define LOGNAME "graph.dot"
-
-#include "Lisp.h"
-#include <iostream>
-
-int main ()
+int main (int argv, char ** argc)
 {
-	icl::list <LispObj> obj;
-	std::map <std::string, int> map;
+	const char * data = (argv == 1) ? "code.icp" : argc[1];
 
-	std::string str = "(1 2 3 4 (1 3 4 5))";
 
-	parser (&obj, &str , map);
+	DeviceManager PCI;
+	AudioCard audio;
+	
+	PCI.AddDevice (&audio);
 
-	listPrint (obj, map);
+	Processor proc (PCI);
 
+	std::ifstream code (data);
+	proc.read (code); 
+	code.close ();
+
+	proc.run (std::cout);
+
+	system ("pause");
 	return 0;
 }

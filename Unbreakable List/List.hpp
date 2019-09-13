@@ -27,6 +27,8 @@ namespace icl
 	template<typename T>
 	list <T> & list <T>::operator=(const list<T> & other)
 	{
+		clear ();
+
 		for (node<T> * i = other.start; i != nullptr; i = i->next)
 			push_back (i->data);
 
@@ -104,7 +106,7 @@ namespace icl
 
 		size++;
 
-		node <T> * list<T>::add = new node <T> (data, nullptr, start);
+		node <T> * add = new node <T> (data, nullptr, start);
 		start->prev = add;
 		start = add;
 
@@ -369,7 +371,6 @@ namespace icl
 	{
 		return size;
 	}
-
 	
 	template<typename T>
 	std::ostream & operator<<(std::ostream & s, list <T> & v)
@@ -379,6 +380,8 @@ namespace icl
 
 		return s;
 	}
+
+	
 }
 
 

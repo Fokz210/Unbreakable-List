@@ -1,0 +1,11 @@
+START:
+IN
+CALL FACT
+OUT
+JMP END
+
+FACT:
+
+RET
+
+END:
